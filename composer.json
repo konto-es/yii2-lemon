@@ -1,0 +1,36 @@
+{
+    "name": "kowi/yii2-lemonway",
+    "description": "Yii2 lemonway Payments Integration",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","shasta","payments"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yusney Martinez Duque",
+            "email": "yusney@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0",
+        "yiisoft/yii2-httpclient": "^2.0",
+        "yii2mod/yii2-enum": "^1.7",
+        "tigrov/intldata": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "kowi\\lemonway\\": ""
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "require-dev": {
+        "codeception/codeception": "^4.0",
+        "codeception/module-asserts": "^1.1",
+        "codeception/module-yii2": "^1.0",
+        "codeception/specify": "^1.2"
+    }
+}
