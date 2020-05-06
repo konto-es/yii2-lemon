@@ -1,15 +1,16 @@
 <?php
 
-namespace kowi\lemonway\validators;
+namespace kowi\lemon\validators;
 
 use yii\base\Exception;
 use yii\base\Model;
 use yii\validators\ExistValidator as BaseExistValidator;
 
 class ExistValidator extends BaseExistValidator
-{    
+{
     /**
      * {@inheritdoc}
+     * @throws Exception
      */
     public function validateAttribute($model, $attribute)
     {

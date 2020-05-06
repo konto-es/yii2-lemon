@@ -1,6 +1,6 @@
 <?php
 
-namespace kowi\lemonway\validators;
+namespace kowi\lemon\validators;
 
 use yii\validators\Validator;
 
