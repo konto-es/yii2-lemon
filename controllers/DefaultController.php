@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
-use kowi\lemonway\objects\Adresse;
-use kowi\lemonway\objects\Birth;
-use kowi\lemonway\resources\AccountIndividual;
-use Yii;
+use kowi\lemon\objects\Adresse;
+use kowi\lemon\objects\Birth;
+use kowi\lemon\objects\Card;
+use kowi\lemon\resources\AccountIndividual;
+use kowi\lemon\resources\ResgisterCard;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\httpclient\Exception;
@@ -29,33 +30,52 @@ class DefaultController extends Controller
      *
      * @throws Exception
      * @throws InvalidConfigException
+     * @throws \http\Exception
      */
     public function actionIndex()
     {
         $adresse = new Adresse();
-        $adresse->street ='26 rue de Paris';
-        $adresse->postCode ='93100';
-        $adresse->city ='Montreuil';
-        $adresse->country ='FRA';
+        $adresse->street = '26 rue de Paris';
+        $adresse->postCode = '93100';
+        $adresse->city = 'Montreuil';
+        $adresse->country = 'FRA';
 
         $birth = new Birth();
-        $birth->date='1985/03/21';
-        $birth->city='Montreuil';
-        $birth->Country='FRA';
+        $birth->date = '1985/03/21';
+        $birth->city = 'Montreuil';
+        $birth->Country = 'FRA';
 
         $account = new AccountIndividual();
-        $account->accountId ='2';
-        $account->email ='ymartinez@sicma21.com';
+        $account->accountId = '2';
+        $account->email = 'ymartinez@sicma21.com';
         $account->title = 'M';
-        $account->firstName = 'yusney';
+        $account->firstName = 'adrian';
         $account->lastName = 'martinez duque';
         $account->adresse = $adresse;
-        $account->birth =$birth ;
+        $account->birth = $birth;
 
         $account->nationality = 'CUB';
-        $account->phoneNumber = '632613251';
-        $account->mobileNumber = '632613251';
-        $a=$account->insert();
-        var_dump($account->getErrors());
+        $account->phoneNumber = '5342492852';
+        $account->mobileNumber = '5342492852';
+        $account->payerOrBeneficiary = 1;
+//---------------regitrar tarjeta
+        $card = new Card();
+        $card->cardType = 1;
+        $card->cardNumber = '4716202982346875';
+        $card->cardCode = '123';
+        $card->cardDate = '05/2022';
+
+        $registerCard = new ResgisterCard();
+        $registerCard->accountId = 1;
+        $registerCard->card=$card;
+
+        //$registerCard->save();
+        //$a = ResgisterCard::findOne(1);
+        // $account->save();
+        $a = AccountIndividual::findOne('5');
+        // $a->adresse->street='calle cuba';
+        //$a->save();
+
+        var_dump($a);
     }
 }
