@@ -1,14 +1,15 @@
 <?php
 
 
-namespace kowi\lemonway\resources;
+namespace kowi\lemon\resources;
 
-use kowi\lemonway\objects\Adresse;
-use kowi\lemonway\objects\Birth;
+use kowi\lemon\objects\Adresse;
+use kowi\lemon\objects\Birth;
+use yii\httpclient\Response;
 
 /**
  * Class AccountIndividual
- * @package kowi\lemonway\resources
+ * @package kowi\lemon\resources
  */
 class AccountIndividual extends LemonwayResource
 {
@@ -19,6 +20,7 @@ class AccountIndividual extends LemonwayResource
      * in the transfer label/comment, a label of more that 20 characters could be cut when passing the the
      * banking system.
      */
+    public $id;
     public $accountId;
     /** @var string Unique Email. */
     public $email;
@@ -28,7 +30,7 @@ class AccountIndividual extends LemonwayResource
     public $firstName;
     /** @var string CLIENT last name. */
     public $lastName;
-    /** @var Adresse  */
+    /** @var Adresse */
     public $adresse;
     /** @var Birth */
     public $birth;
@@ -72,13 +74,23 @@ class AccountIndividual extends LemonwayResource
         return array_merge(parent::rules(), [
             /** @see https://apidoc.lemonway.com/#operation/Accounts_IndividualPut */
             [['accountId', 'email', 'firstName', 'lastName', 'nationality', 'payerOrBeneficiary'], 'required', 'on' => [static::SCENARIO_CREATE]],
-            [['accountId'], 'string', 'min' => 1, 'max' => 100],
-            [['email'], 'string',  'min' => 6, 'max' => 256],
-            [['email'], 'match', 'pattern' => '^[12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$'],
+            [['accountId'], 'string', 'min' => 1, 'max' => 100, 'on' => [static::SCENARIO_CREATE]],
+            [[
+                'id',
+                'firstname',
+                'lastname',
+                'internalId',
+                'balance',
+                'status',
+                'isblocked',
+                'accountType',
+            ], 'safe', 'on' => [static::SCENARIO_LOAD]],
+            [['email'], 'string', 'min' => 6, 'max' => 256],
+            //[['email'], 'match', 'pattern' => '^[12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$'],
             ['title', 'in', 'range' => ['M', 'F', 'J', 'U']],
             [['firstName', 'lastName'], 'string', 'min' => 2, 'max' => 256],
-            [['adresse'], 'kowi\lemonway\validators\ObjectValidator', 'targetClass' => 'kowi\lemonway\objects\Adresse'],
-            [['birth'], 'kowi\lemonway\validators\ObjectValidator', 'targetClass' => 'kowi\lemonway\objects\Birth'],
+            [['adresse'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Adresse'],
+            [['birth'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Birth'],
             [['nationality'], 'string', 'min' => 0, 'max' => 19],
             [['phoneNumber', 'mobileNumber'], 'string', 'min' => 6, 'max' => 30],
             [['isDebtor', 'isOneTimeCustomerAccount', 'isTechnicalAccount'], 'boolean'],
@@ -86,12 +98,143 @@ class AccountIndividual extends LemonwayResource
         ]);
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), [
+            'internalId', 'balance', 'status', 'isblocked', 'accountType'
+        ]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInternalId()
+    {
+        return $this->internalId;
+    }
+
+    /**
+     * @param mixed $internalId
+     */
+    public function setInternalId($internalId)
+    {
+        $this->internalId = $internalId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param integer $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param integer $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsblocked()
+    {
+        return $this->isblocked;
+    }
+
+    /**
+     * @param boolean $status
+     */
+    public function setIsblocked($isblocked)
+    {
+        $this->isblocked = $isblocked;
+    }
+    /**
+     * @return integer
+     */
+    public function getAccountType()
+    {
+        return $this->accountType;
+    }
+
+    /**
+     * @param integer $status
+     */
+    public function setAccountType($accountType)
+    {
+        $this->accountType = $accountType;
+    }
+
+    /**
+     * @param Response $response
+     * @return bool
+     * @throws \yii\base\Exception
+     */
+    public function loadAttributes(Response $response)
+    {
+        if(isset($response->data['account']))
+            $response->addData($response->data['account']);
+        return parent::loadAttributes($response);
+    }
+
+
     public static function resource()
     {
         return [
-            static::SCENARIO_LOAD => '/accounts',
-            static::SCENARIO_CREATE => '/accounts/individual',
-            static::SCENARIO_UPDATE => '/accounts/individual',
+            static::SCENARIO_LOAD => '/v2/accounts',
+            static::SCENARIO_CREATE => '/v2/accounts/individual',
+            static::SCENARIO_UPDATE => '/v2/accounts/individual',
         ];
     }
 }
