@@ -1,6 +1,6 @@
 <?php
 
-namespace kowi\lemonway\objects;
+namespace kowi\lemon\objects;
 
 use yii\base\Model;
 
@@ -18,7 +18,7 @@ class Birth extends Model
         return array_merge(parent::rules(), [
             /** @see https://apidoc.lemonway.com/#operation/Accounts_IndividualPut */
             [['date'], 'required'],
-            [['date'], 'match', 'pattern' => '^[12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$'],
+            //[['date'], 'match', 'pattern' => '^[12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$'],
             [['city'], 'string', 'max' => 140],
             [['Country'], 'string', 'length' => 3],
         ]);
