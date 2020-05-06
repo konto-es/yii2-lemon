@@ -1,12 +1,12 @@
 <?php
 
-namespace kowi\lemonway\objects;
+namespace kowi\lemon\objects;
 
 use yii\base\Model;
 
 /**
  * Class Company
- * @package kowi\lemonway\objects
+ * @package kowi\lemon\objects
  */
 class Company extends Model
 {
