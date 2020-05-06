@@ -1,8 +1,8 @@
 <?php
 
-namespace kowi\lemonway\resources;
+namespace kowi\lemon\resources;
 
-use kowi\lemonway\objects\Company;
+use kowi\lemon\objects\Company;
 
 class AccountLegal extends AccountIndividual
 {
@@ -14,7 +14,7 @@ class AccountLegal extends AccountIndividual
         return array_merge(parent::rules(), [
             /** @see https://apidoc.lemonway.com/#operation/Accounts_LegalPost */
             [['company'], 'required', 'on' => static::SCENARIO_CREATE],
-            [['company'], 'kowi\lemonway\validators\ObjectValidator', 'targetClass' => 'kowi\lemonway\objects\Company'],
+            [['company'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Company'],
         ]);
     }
 
