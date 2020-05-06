@@ -14,7 +14,8 @@
         "yiisoft/yii2": "~2.0.0",
         "yiisoft/yii2-httpclient": "^2.0",
         "yii2mod/yii2-enum": "^1.7",
-        "tigrov/intldata": "^1.1"
+        "tigrov/intldata": "^1.1",
+        "ext-http": "*"
     },
     "autoload": {
         "psr-4": {
