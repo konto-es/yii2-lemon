@@ -1,13 +1,17 @@
 {
-    "name": "kowi/yii2-lemonway",
-    "description": "Yii2 lemonway Payments Integration",
+    "name": "kowi/yii2-lemon",
+    "description": "Yii2 LemonWay Payments Integration",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension","shasta","payments"],
+    "keywords": ["yii2", "extension", "lemonway", "payments"],
     "license": "MIT",
     "authors": [
         {
             "name": "Yusney Martinez Duque",
             "email": "yusney@gmail.com"
+        },
+        {
+            "name": "Dany Daniel Roche",
+            "email": "ddanielroche@gmail.com"
         }
     ],
     "require": {
@@ -15,12 +19,11 @@
         "yiisoft/yii2-httpclient": "^2.0",
         "yii2mod/yii2-enum": "^1.7",
         "tigrov/intldata": "^1.1",
-        "ext-http": "*",
         "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
-            "kowi\\lemonway\\": ""
+            "kowi\\lemon\\": ""
         }
     },
     "repositories": [

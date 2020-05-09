@@ -1,4 +1,4 @@
-namespace: ddroche\shasta\tests
+namespace: kowi\lemon\tests
 paths:
     tests: tests
     output: tests/_output

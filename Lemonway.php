@@ -2,22 +2,18 @@
 
 namespace kowi\lemon;
 
-use DateTime;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\httpclient\Client;
 use yii\httpclient\Request;
+use yii\web\HttpException;
 
 /**
- * Class Module
- * @package ddroche\shasta
+ * Class Lemonway
+ * @package kowi\lemon
  * @see https://sandbox-api.lemonway.fr/mb/app/dev/directkitrest/swagger/ui/index#
- *
- * @property string $apiBaseUrl The Lemonway API Base URL
- * @property string $apiKey The Lemonway API Key
- * @property string $httpClient The HTTP Client to access Lemonway service
  */
 class Lemonway extends Component
 {
@@ -73,14 +69,50 @@ class Lemonway extends Component
      */
     public function createRequest()
     {
-       $accessToken = $this->getAccessToken();
-
-        $request = $this->getHttpClient()
-            ->createRequest()
-            ->setFormat(Client::FORMAT_JSON);
-        $request->headers->set('Authorization', $accessToken);
+        $request = $this->getHttpClient()->createRequest()->setFormat(Client::FORMAT_JSON);
+        $request->headers->set('Authorization', $this->getAccessToken());
         $request->headers->set('PSU-IP-Address', '10.10.10.10');
         return $request;
+    }
+
+    /**
+     * @return string
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     * @throws \Exception
+     */
+    private function getAccessToken()
+    {
+        if (file_exists($this->getNewApiKeyPath())) {
+            $data = file_get_contents($this->getNewApiKeyPath());
+            $data = Json::decode($data,true);
+            if ($data['expires_at'] <= time()) {
+                $data = $this->createFile();
+            }
+
+        } else {
+            $data = $this->createFile();
+        }
+
+        return $data['token_Type'] . ' ' . $data['access_token'];
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws \yii\httpclient\Exception
+     */
+    private function createFile()
+    {
+        $response = $this->getNewApikey();
+        if ($response->isOk) {
+            $data = $response->data;
+            $data['expires_at'] = $data['expires_in'] + time();
+            $json_string = Json::encode($data);
+            file_put_contents($this->getNewApiKeyPath(), $json_string);
+            return $data;
+        } else {
+            throw new HttpException('Error on get new api key');
+        }
     }
 
     /**
@@ -102,46 +134,4 @@ class Lemonway extends Component
         $response = $request->setMethod('POST')->send();
         return $response;
     }
-
-    /**
-     * @return string
-     * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
-     * @throws \Exception
-     */
-    private function getAccessToken()
-    {
-        if (!file_exists($this->getNewApiKeyPath() . 'accessToken.json')) {
-            $datos_clientes = file_get_contents($this->getNewApiKeyPath() . '/accessToken.json');
-            $token=Json::decode($datos_clientes,true);
-            $date1 = new DateTime("now");
-            $date2 = new DateTime($token['expire_date']);
-            if ($date1 <= $date2) {
-                $this->createFile();
-            }
-            return $token['token_Type'] . ' ' . $token['access_token'];
-        } else {
-            $this->createFile();
-            $token = file_get_contents($this->getNewApiKeyPath() . '/accessToken.json');
-            return $token['token_Type'] . ' ' . $token['access_token'];
-        }
-    }
-
-    /**
-     * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
-     */
-    private function createFile()
-    {
-        $response = $this->getNewApikey();
-        if ($response->isOk) {
-            $data = $response->data;
-            $date = new DateTime();
-            $data['expire_date'] = $date->modify(($data['expires_in'] - 60) . ' second')->format(DateTime::ATOM);
-            $json_string = json_encode($data);
-            //$php = "<?php return ".print_r($data).";";
-            file_put_contents ($this->getNewApiKeyPath() . "/accessToken.json", $json_string);
-        }
-    }
-
 }

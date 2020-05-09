@@ -1,5 +1,5 @@
 <?php
-namespace kowi\lemonway\tests;
+namespace kowi\lemon\tests;
 
 use Codeception\Actor;
 

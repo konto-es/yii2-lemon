@@ -1,6 +1,6 @@
 <?php
 
-namespace kowi\lemonway;
+namespace kowi\lemon;
 
 use yii\base\Module as BaseModule;
 

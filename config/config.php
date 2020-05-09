@@ -10,7 +10,7 @@ return [
     ],
     'modules' => [
         'lemonway' => [
-            'class' => 'kowi\lemonway\Module',
+            'class' => 'kowi\lemon\Module',
         ],
     ]
 ];

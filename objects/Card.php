@@ -4,7 +4,7 @@
 namespace kowi\lemon\objects;
 
 use kowi\lemon\enums\CardType;
-use kowi\lemon\resources\LemonwayResource;
+use kowi\lemon\resources\Resource;
 use yii\base\Model;
 
 class Card extends Model
@@ -41,7 +41,7 @@ class Card extends Model
     {
         return array_merge(parent::rules(), [
             /** @see https://apidoc.lemonway.com/#operation/MoneyIns_CardRegisterPost **/
-            [['cardType', 'cardNumber', 'cardCode', 'cardDate'], 'required', 'on' => [LemonwayResource::SCENARIO_CREATE] ],
+            [['cardType', 'cardNumber', 'cardCode', 'cardDate'], 'required', 'on' => [Resource::SCENARIO_CREATE] ],
             [['cardNumber'], 'string', 'min' => 13, 'max' => 19],
             [['cardCode'], 'string', 'length' => 3],
             [['cardType'], 'ranges' =>CardType::listData()],
@@ -52,7 +52,7 @@ class Card extends Model
                 'maskedNumber',
                 'expiration',
                 'type'
-            ], 'safe', 'on' => [LemonwayResource::SCENARIO_LOAD]],
+            ], 'safe', 'on' => [Resource::SCENARIO_LOAD]],
         ]);
     }
 

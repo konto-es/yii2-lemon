@@ -11,7 +11,7 @@ use yii\httpclient\Response;
  * Class AccountIndividual
  * @package kowi\lemon\resources
  */
-class AccountIndividual extends LemonwayResource
+class AccountIndividual extends Resource
 {
     /**
      * @var string Payment account ID that you use to identify the customer.Choose your unique number.
@@ -20,8 +20,12 @@ class AccountIndividual extends LemonwayResource
      * in the transfer label/comment, a label of more that 20 characters could be cut when passing the the
      * banking system.
      */
-    public $id;
     public $accountId;
+    public $internalId;
+    public $balance;
+    public $status;
+    public $isblocked;
+    public $accountType;
     /** @var string Unique Email. */
     public $email;
     /** @var string CLIENT title. */
@@ -75,16 +79,7 @@ class AccountIndividual extends LemonwayResource
             /** @see https://apidoc.lemonway.com/#operation/Accounts_IndividualPut */
             [['accountId', 'email', 'firstName', 'lastName', 'nationality', 'payerOrBeneficiary'], 'required', 'on' => [static::SCENARIO_CREATE]],
             [['accountId'], 'string', 'min' => 1, 'max' => 100, 'on' => [static::SCENARIO_CREATE]],
-            [[
-                'id',
-                'firstname',
-                'lastname',
-                'internalId',
-                'balance',
-                'status',
-                'isblocked',
-                'accountType',
-            ], 'safe', 'on' => [static::SCENARIO_LOAD]],
+            [['id', 'firstname', 'lastname', 'internalId', 'balance', 'status', 'isblocked', 'accountType'], 'safe', 'on' => [static::SCENARIO_LOAD]],
             [['email'], 'string', 'min' => 6, 'max' => 256],
             //[['email'], 'match', 'pattern' => '^[12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$'],
             ['title', 'in', 'range' => ['M', 'F', 'J', 'U']],
@@ -93,46 +88,38 @@ class AccountIndividual extends LemonwayResource
             [['birth'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Birth'],
             [['nationality'], 'string', 'min' => 0, 'max' => 19],
             [['phoneNumber', 'mobileNumber'], 'string', 'min' => 6, 'max' => 30],
-            [['isDebtor', 'isOneTimeCustomerAccount', 'isTechnicalAccount'], 'boolean'],
-            ['payerOrBeneficiary', 'in', 'range' => [1, 2, 3]],
+            [['isDebtor', 'isOneTimeCustomerAccount', 'isTechnicalAccount'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            ['payerOrBeneficiary', 'in', 'range' => [null, 1, 2]],
         ]);
     }
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), [
-            'internalId', 'balance', 'status', 'isblocked', 'accountType'
-        ]);
+        return array_merge(parent::attributes(), ['id', 'firstname', 'lastname']);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getInternalId()
+    public function getId()
     {
-        return $this->internalId;
+        return $this->accountId;
     }
 
-    /**
-     * @param mixed $internalId
-     */
-    public function setInternalId($internalId)
+    public function setId($id)
     {
-        $this->internalId = $internalId;
+        $this->accountId = $id;
     }
 
     /**
      * @return string
      */
-    public function getFirstName()
+    public function getFirstname()
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
      * @param string $firstName
      */
-    public function setFirstName($firstName)
+    public function setFirstname($firstName)
     {
         $this->firstName = $firstName;
     }
@@ -140,80 +127,17 @@ class AccountIndividual extends LemonwayResource
     /**
      * @return string
      */
-    public function getLastName()
+    public function getLastname()
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
      * @param string $lastName
      */
-    public function setLastName($lastName)
+    public function setLastname($lastName)
     {
         $this->lastName = $lastName;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
-     * @param integer $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param integer $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsblocked()
-    {
-        return $this->isblocked;
-    }
-
-    /**
-     * @param boolean $status
-     */
-    public function setIsblocked($isblocked)
-    {
-        $this->isblocked = $isblocked;
-    }
-    /**
-     * @return integer
-     */
-    public function getAccountType()
-    {
-        return $this->accountType;
-    }
-
-    /**
-     * @param integer $status
-     */
-    public function setAccountType($accountType)
-    {
-        $this->accountType = $accountType;
     }
 
     /**

@@ -1,7 +1,8 @@
 <?php
 
-namespace kowi\lemonway\traits;
-use ddroche\shasta\resources\ShastaResource;
+namespace kowi\lemon\traits;
+
+use \kowi\lemon\resources\Resource;
 use yii\base\Exception as BaseException;
 
 trait RelationalTrait {
@@ -11,18 +12,18 @@ trait RelationalTrait {
     /**
      * @param string $resource
      * @param string $attribute
-     * @return ShastaResource|null
+     * @return Resource|null
      * @throws BaseException
      */
     public function hasOne($resource, $attribute)
     {
-        if (!is_subclass_of($resource, ShastaResource::class)) {
-            throw new BaseException("$resource is not subclass of " . ShastaResource::class);
+        if (!is_subclass_of($resource, Resource::class)) {
+            throw new BaseException("$resource is not subclass of " . Resource::class);
         }
         if (!$this->hasProperty($attribute)) {
             throw new BaseException("$attribute not exit in $resource");
         }
-        /** @var ShastaResource $resource */
+        /** @var Resource $resource */
         if (!isset($this->_related[$attribute])) {
             $this->_related[$attribute] = $resource::findOne($this->$attribute);
         }

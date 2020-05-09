@@ -3,9 +3,11 @@
 return [
     'components' => [
         'lemonway' => [
-            'class' => 'kowi\lemonway\Lemonway',
-            'apiBaseUrl' => 'https://api-sandbox.payments.shasta.me/v1',
-            'apiKey' => getenv('SHASTA_API_KEY'),
+            'class' => 'kowi\lemon\Lemonway',
+            'apiBaseUrl' => 'https://sandbox-api.lemonway.fr/mb/kowi/dev/directkitrest',
+            'apiAuthUrl' => 'https://sandbox-api.lemonway.fr/oauth/api/v1/oauth/token',
+            'newApiKeyPath' => '@app/runtime/accessToken.json',
+            'apiKey' => getenv('LEMON_API_KEY'),
         ],
     ],
 ];

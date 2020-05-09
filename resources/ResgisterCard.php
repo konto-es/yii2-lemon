@@ -6,7 +6,7 @@ namespace kowi\lemon\resources;
 
 use kowi\lemon\objects\Card;
 
-class ResgisterCard extends LemonwayResource
+class ResgisterCard extends Resource
 {
     public $id;
     /**

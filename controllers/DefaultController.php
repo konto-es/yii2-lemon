@@ -4,34 +4,15 @@ namespace app\controllers;
 
 use kowi\lemon\objects\Adresse;
 use kowi\lemon\objects\Birth;
-use kowi\lemon\objects\Card;
 use kowi\lemon\resources\AccountIndividual;
-use kowi\lemon\resources\ResgisterCard;
-use yii\base\InvalidConfigException;
 use yii\console\Controller;
-use yii\httpclient\Exception;
 
 /**
- * Class ShastaController
- * @package ddroche\shasta\controllers
+ * Class DefaultController
+ * @package app\controllers
  */
 class DefaultController extends Controller
 {
-    /**
-     * @see https://doc.payments.shasta.me/
-     *
-     * 1- Create Project
-     * 2- Create Customer in Project
-     * 3- Create Bank Account for Customer in Project
-     * 4- Create Account for Customer in Project
-     * 5- Create Bank Payin References
-     * 6- Create Bank Payins
-     * 7- Create Transfer
-     *
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws \http\Exception
-     */
     public function actionIndex()
     {
         $adresse = new Adresse();
@@ -49,8 +30,8 @@ class DefaultController extends Controller
         $account->accountId = '2';
         $account->email = 'ymartinez@sicma21.com';
         $account->title = 'M';
-        $account->firstName = 'adrian';
-        $account->lastName = 'martinez duque';
+        $account->firstName = 'Adrian';
+        $account->lastName = 'Martinez Duque';
         $account->adresse = $adresse;
         $account->birth = $birth;
 
@@ -58,24 +39,11 @@ class DefaultController extends Controller
         $account->phoneNumber = '5342492852';
         $account->mobileNumber = '5342492852';
         $account->payerOrBeneficiary = 1;
-//---------------regitrar tarjeta
-        $card = new Card();
-        $card->cardType = 1;
-        $card->cardNumber = '4716202982346875';
-        $card->cardCode = '123';
-        $card->cardDate = '05/2022';
+        //print_r($account->toArray());
+        if (!$account->insert()) {
+            print_r($account->getErrors());
 
-        $registerCard = new ResgisterCard();
-        $registerCard->accountId = 1;
-        $registerCard->card=$card;
-
-        //$registerCard->save();
-        //$a = ResgisterCard::findOne(1);
-        // $account->save();
-        $a = AccountIndividual::findOne('5');
-        // $a->adresse->street='calle cuba';
-        //$a->save();
-
-        var_dump($a);
+            print_r(AccountIndividual::findOne('2')->attributes);
+        }
     }
 }
