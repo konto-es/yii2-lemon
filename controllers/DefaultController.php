@@ -28,7 +28,7 @@ class DefaultController extends Controller
 
         $account = new AccountIndividual();
         $account->accountId = '2';
-        $account->email = 'ymartinez@sicma21.com';
+        $account->email = 'ymartinez@gmail.com';
         $account->title = 'M';
         $account->firstName = 'Adrian';
         $account->lastName = 'Martinez Duque';
