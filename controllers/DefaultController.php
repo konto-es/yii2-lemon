@@ -5,6 +5,7 @@ namespace app\controllers;
 use kowi\lemon\objects\Adresse;
 use kowi\lemon\objects\Birth;
 use kowi\lemon\resources\AccountIndividual;
+use kowi\lemon\resources\Iban;
 use yii\console\Controller;
 
 /**
@@ -15,6 +16,17 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
+        $iban = new Iban();
+        $iban->accountId = '2';
+        $iban->holder = 'JEAN DUPONT';
+        $iban->iban = 'FR1420041010050500013M02606';
+
+        if (!$iban->insert()) {
+            print_r($iban->getErrors());
+        } else {
+            print_r($iban->attributes);
+        }
+        return;
         $adresse = new Adresse();
         $adresse->street = '26 rue de Paris';
         $adresse->postCode = '93100';
