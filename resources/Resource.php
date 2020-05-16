@@ -24,7 +24,7 @@ abstract class Resource extends Model
     public function rules()
     {
         return array_merge(parent::rules(),[
-            [['error'],'safe', 'on' => [static::SCENARIO_LOAD]],
+            [['error'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Error'],
         ]);
     }
 

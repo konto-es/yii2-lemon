@@ -6,6 +6,7 @@ use kowi\lemon\objects\Adresse;
 use kowi\lemon\objects\Birth;
 use kowi\lemon\resources\AccountIndividual;
 use kowi\lemon\resources\Iban;
+use kowi\lemon\resources\MoneyOut;
 use yii\console\Controller;
 
 /**
@@ -16,6 +17,21 @@ class DefaultController extends Controller
 {
     public function actionIndex()
     {
+        $out = new MoneyOut();
+        $out->accountId = '2';
+        $out->ibanId = 9;
+        $out->totalAmount = 1500;
+        $out->commissionAmount = 300;
+        $out->autoCommission = false;
+        if (!$out->insert()) {
+            echo 'ERROR';
+            print_r($out->getErrors());
+        } else {
+            echo 'OK';
+            print_r($out->attributes);
+        }
+        return;
+
         $iban = new Iban();
         $iban->accountId = '2';
         $iban->holder = 'JEAN DUPONT';

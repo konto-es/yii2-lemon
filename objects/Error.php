@@ -9,18 +9,22 @@ use yii\base\Model;
 class Error extends Model
 {
     /**
-     * @var integer $code
+     * @var integer
      */
     public $code;
     /**
-     * @var string $message
+     * @var string
      */
     public $message;
+    /**
+     * @var string
+     */
+    public $psp;
 
     public function rules()
     {
-        return array_merge(parent::rules(),[
-            [['code','message'],'safe'],
-        ]);
+        return [
+            [['code', 'message', 'psp'], 'safe'],
+        ];
     }
 }
