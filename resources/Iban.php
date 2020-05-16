@@ -4,6 +4,10 @@
 namespace kowi\lemon\resources;
 
 use kowi\lemon\enums\IbanStatus;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\httpclient\Exception as httpException;
+use yii\httpclient\Response;
 
 class Iban extends Resource
 {
@@ -46,6 +50,10 @@ class Iban extends Resource
      * @var integer IBAN Status
      */
     public $status;
+    /**
+     * @var integer Indicates it it's a merchant iban or a virtual client iban. 1: merchant iban 2: iban virtual client.
+     */
+    public $type ;
 
     public function rules()
     {
@@ -57,8 +65,33 @@ class Iban extends Resource
             [['iban'], 'string', 'min' => 15, 'max' => 34, 'on' => [static::SCENARIO_CREATE]],
             [['domiciliation1', 'domiciliation1'], 'string', 'min' => 1, 'max' => 256, 'on' => [static::SCENARIO_CREATE]],
             [['comment'], 'string', 'min' => 1, 'max' => 512, 'on' => [static::SCENARIO_CREATE]],
-            [['ibanId', 'status'], 'integer', 'on' => [static::SCENARIO_LOAD]],
+            [['id', 'ibanId', 'status', 'iban', 'swift', 'holder', 'type'], 'safe', 'on' => [static::SCENARIO_LOAD]],
         ]);
+    }
+
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['id', 'swift']);
+    }
+
+    public function getId()
+    {
+        return $this->ibanId;
+    }
+
+    public function setId($id)
+    {
+        $this->ibanId = $id;
+    }
+
+    public function getSwift()
+    {
+        return $this->bic;
+    }
+
+    public function setSwift($swift)
+    {
+        $this->bic = $swift;
     }
 
     public function getStatusLabel()
@@ -66,10 +99,39 @@ class Iban extends Resource
         return IbanStatus::getLabel($this->status);
     }
 
+    /**
+     * @param $accountId
+     * @return Resource[]
+     * @throws InvalidConfigException
+     * @throws httpException
+     */
+    public static function findAllIbans($accountId)
+    {
+        return parent::findAll(['accountid' => $accountId]);
+    }
+
+    /**
+     * @param Response $response
+     * @return array
+     * @throws Exception
+     */
+    public static function loadModels(Response $response)
+    {
+        $result = [];
+        foreach ($response->data['ibans'] as $record) {
+            $tmp = new static();
+            $tmp->scenario = Resource::SCENARIO_LOAD;
+            $tmp->setAttributes($record);
+            $result[] = $tmp;
+        }
+
+        return $result;
+    }
 
     public static function resource()
     {
         return [
+            static::SCENARIO_LOAD => '/v2/moneyouts/{accountid}/iban',
             static::SCENARIO_CREATE => '/v2/moneyouts/iban',
         ];
     }

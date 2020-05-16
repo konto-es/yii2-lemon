@@ -26,6 +26,8 @@ class DefaultController extends Controller
         } else {
             print_r($iban->attributes);
         }
+
+        print_r(Iban::findAllIbans('2')[0]->attributes);
         return;
         $adresse = new Adresse();
         $adresse->street = '26 rue de Paris';

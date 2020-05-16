@@ -3,12 +3,12 @@
 
 namespace kowi\lemon\resources;
 
-use http\Client;
-use http\Exception;
 use kowi\lemon\Lemonway;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\httpclient\Client;
+use yii\httpclient\Exception;
 use yii\httpclient\Response;
 
 abstract class Resource extends Model
@@ -60,7 +60,7 @@ abstract class Resource extends Model
      * @param null $attributes
      * @return bool
      * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -157,7 +157,7 @@ abstract class Resource extends Model
      * @return bool
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \yii\httpclient\Exception
+     * @throws Exception
      */
     public function read()
     {
@@ -177,16 +177,18 @@ abstract class Resource extends Model
 
     /**
      * @param array $condition
-     * @return array
+     * @return Resource[]
      * @throws InvalidConfigException
+     * @throws Exception
      */
     public static function findAll($condition = [])
     {
+        $url = static::replace(static::resource()['load'], $condition);
         $response = static::getLemonway()->createRequest()
             ->setFormat(Client::FORMAT_URLENCODED)
             ->setMethod('GET')
-            ->setUrl(static::resource())
-            ->setData($condition)
+            ->setUrl($url)
+            //->setData($condition)
             ->send();
 
         if (!$response->isOk) {
@@ -195,8 +197,17 @@ abstract class Resource extends Model
             return [$tmp];
         }
 
+        return static::loadModels($response);
+    }
+
+    /**
+     * @param Response $response
+     * @return Resource[]
+     */
+    public static function loadModels(Response $response)
+    {
         $result = [];
-        foreach ($response->data['data'] as $record) {
+        foreach ($response->data as $record) {
             $tmp = new static();
             $tmp->scenario = Resource::SCENARIO_LOAD;
             $tmp->setAttributes($record);
@@ -225,6 +236,16 @@ abstract class Resource extends Model
         $this->setAttributes($response->data);
 
         return true;
+    }
+    
+    public static function replace($url, $params)
+    {
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $url : strtr($url, $placeholders);
     }
 
 }
