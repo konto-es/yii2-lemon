@@ -4,8 +4,6 @@
 namespace kowi\lemon\resources;
 
 
-use kowi\lemon\objects\Error;
-
 class MoneyInWebInit extends Resource
 {
     /** @var string  WHITE BRAND back URL, called by WEBKIT to terminate the operation. */
@@ -51,8 +49,6 @@ class MoneyInWebInit extends Resource
     public $id;
     /** @var integer card ID */
     public $cardId;
-    /** @var Error error */
-    public $error;
 
     public function rules()
     {
@@ -66,9 +62,7 @@ class MoneyInWebInit extends Resource
             ['moneyInNature', 'in', 'range' => [0, 1]],
             [['registerCard', 'autoCommission'], 'boolean', 'on' => [static::SCENARIO_CREATE]],
 
-            [['webKitToken', 'id', 'cardId', 'error'], 'safe', 'on' => [static::SCENARIO_CREATE]],
-            [['adresse'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\Error', 'on' => [static::SCENARIO_CREATE]],
-
+            [['webKitToken', 'id', 'cardId'], 'safe', 'on' => [static::SCENARIO_LOAD]],
         ]);
     }
 
