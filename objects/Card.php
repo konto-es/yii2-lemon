@@ -44,7 +44,7 @@ class Card extends Model
             [['cardType', 'cardNumber', 'cardCode', 'cardDate'], 'required', 'on' => [Resource::SCENARIO_CREATE] ],
             [['cardNumber'], 'string', 'min' => 13, 'max' => 19],
             [['cardCode'], 'string', 'length' => 3],
-            [['cardType'], 'ranges' =>CardType::listData()],
+            [['cardType'], 'in', 'range' =>CardType::getConstantsByName()],
             [[
                 'is3DS',
                 'country',

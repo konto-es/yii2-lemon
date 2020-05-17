@@ -53,7 +53,7 @@ class Iban extends Resource
     /**
      * @var integer Indicates it it's a merchant iban or a virtual client iban. 1: merchant iban 2: iban virtual client.
      */
-    public $type ;
+    public $type;
 
     public function rules()
     {

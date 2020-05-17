@@ -227,10 +227,6 @@ abstract class Resource extends Model
             $this->addError('Error' . $response->statusCode, $response->data);
             Yii::info($this->getErrors(), __METHOD__);
             return false;
-        } elseif (isset($response->data['error'])) {
-            $this->addError('error' , $response->data['error']);
-            Yii::info($this->getErrors(), __METHOD__);
-            return false;
         }
         $this->scenario = Resource::SCENARIO_LOAD;
         $this->setAttributes($response->data);
