@@ -6,6 +6,7 @@ use kowi\lemon\objects\Adresse;
 use kowi\lemon\objects\Birth;
 use kowi\lemon\resources\AccountIndividual;
 use kowi\lemon\resources\Iban;
+use kowi\lemon\resources\MoneyInWebInit;
 use kowi\lemon\resources\MoneyOut;
 use yii\console\Controller;
 
@@ -86,13 +87,34 @@ class DefaultController extends Controller
         $account->phoneNumber = '33672635263';
         $account->mobileNumber = '33672635263';
         $account->payerOrBeneficiary = 1;
-        //print_r($account->toArray());
-        if (!$account->insert()) {
-            print_r($account->getErrors());
 
-            print_r(AccountIndividual::findOne('2')->attributes);
+        // prueba de  POST /v2/moneyins/card/webinit
+        $webInit = new MoneyInWebInit();
+        $webInit->returnUrl = 'https://example.com/thankyou.php';
+        $webInit->errorUrl = 'https://example.com/oops.php';
+        $webInit->cancelUrl = 'https://example.com/seeYouNextTime.php';
+        $webInit->registerCard = false;
+        $webInit->captureDelayedDays = 6;
+        $webInit->moneyInNature = 0;
+        $webInit->reference = 'Dze8778';
+        $webInit->accountId = '3';
+        $webInit->totalAmount = 50;
+        $webInit->commissionAmount = 0;
+        $webInit->comment = 'Order number 2457765AX2';
+        $webInit->autoCommission = false;
+        if (!$webInit->insert()) {
+            print_r($webInit->getErrors());
         } else {
-            print_r($account->toArray());
+            print_r($webInit->toArray());
         }
+
+        //print_r($account->toArray());
+//        if (!$account->insert()) {
+//            print_r($account->getErrors());
+//
+//            print_r(AccountIndividual::findOne('2')->attributes);
+//        } else {
+//            print_r($account->toArray());
+//        }
     }
 }
