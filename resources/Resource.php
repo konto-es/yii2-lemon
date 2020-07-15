@@ -228,6 +228,11 @@ abstract class Resource extends Model
             Yii::info($this->getErrors(), __METHOD__);
             return false;
         }
+        if (isset($response->data['error'])) {
+            $this->addError('error', $response->data['error']);
+            return false;
+        }
+
         $this->scenario = Resource::SCENARIO_LOAD;
         $this->setAttributes($response->data);
 
@@ -242,6 +247,16 @@ abstract class Resource extends Model
         }
 
         return ($placeholders === []) ? $url : strtr($url, $placeholders);
+    }
+
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
+    public function getPrimaryKey($asArray = false)
+    {
+        return $asArray ? $this->getAttributes(static::primaryKey()) : $this->getAttributes(static::primaryKey())[0];
     }
 
 }
