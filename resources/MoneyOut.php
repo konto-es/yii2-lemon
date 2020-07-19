@@ -44,6 +44,8 @@ class MoneyOut extends Resource
      */
     public $transaction;
 
+    public $id;
+
     public function rules()
     {
         return array_merge(parent::rules(), [

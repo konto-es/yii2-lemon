@@ -197,6 +197,12 @@ abstract class Resource extends Model
             return [$tmp];
         }
 
+        if (isset($response->data['error'])) {
+            $tmp = new static();
+            $tmp->addError('error', $response->data['error']);
+            return [$tmp];
+        }
+
         return static::loadModels($response);
     }
 
