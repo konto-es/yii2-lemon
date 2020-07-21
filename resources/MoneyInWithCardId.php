@@ -4,6 +4,8 @@
 namespace kowi\lemon\resources;
 
 
+use kowi\lemon\objects\TransactionIn;
+use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
@@ -32,9 +34,16 @@ class MoneyInWithCardId extends Resource
      * The WHITE BRAND will not receive any fee.
      */
     public $autoCommission;
+    /**
+     * @var TransactionIn
+     */
+    public $transaction;
 
     /** @var integer */
     public $cardid;
+
+    /** @var integer */
+    public $id;
 
     public function rules()
     {
@@ -46,6 +55,7 @@ class MoneyInWithCardId extends Resource
             [['delayedDays', 'totalAmount', 'commissionAmount'], 'integer', 'on' => [static::SCENARIO_CREATE]],
             [['isPreAuth', 'autoCommission'], 'boolean', 'on' => [static::SCENARIO_CREATE]],
             [['specialConfig'], 'string', 'on' => [static::SCENARIO_CREATE]],
+            [['transaction'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\TransactionIn', 'on' => [static::SCENARIO_LOAD]],
         ]);
     }
 
