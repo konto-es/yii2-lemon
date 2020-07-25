@@ -3,6 +3,7 @@
 
 namespace kowi\lemon\enums;
 
+use Yii;
 use yii2mod\enum\helpers\BaseEnum;
 
 class DocumentType extends BaseEnum
@@ -37,4 +38,22 @@ class DocumentType extends BaseEnum
         self::OTHERS => 'Others',
         self::SDD_MANDATE => 'SDD mandate',
     ];
+
+    public static $messageCategory = 'lemon';
+
+    public function t()
+    {
+        Yii::t('lemon', 'ID card (both sides in one file)');
+        Yii::t('lemon', 'Proof of address');
+        Yii::t('lemon', 'Scan of a proof of IBAN');
+        Yii::t('lemon', 'Passport (European Union)');
+        Yii::t('lemon', 'Passport (outside the European Union)');
+        Yii::t('lemon', 'Residence permit (both sides in one file)');
+        Yii::t('lemon', 'Official company registration document (Kbis extract or equivalent)');
+        Yii::t('lemon', 'Driver licence (both sides in one file)');
+        Yii::t('lemon', 'Status');
+        Yii::t('lemon', 'Selfie');
+        Yii::t('lemon', 'Others');
+        Yii::t('lemon', 'SDD mandate');
+    }
 }

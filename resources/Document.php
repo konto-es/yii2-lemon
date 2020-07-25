@@ -70,6 +70,21 @@ class Document extends Resource
         ]);
     }
 
+    public function fields()
+    {
+        return parent::fields() + ['id'];
+    }
+
+    public function attributes()
+    {
+        return parent::attributes() + ['id'];
+    }
+
+    public function getId()
+    {
+        return isset($this->uploadDocument) ? $this->uploadDocument['id'] : null;
+    }
+
     public function getTypeLabel()
     {
         return DocumentType::getLabel($this->type);
