@@ -100,12 +100,12 @@ class AccountIndividual extends Resource
 
     public function getId()
     {
-        return $this->accountId;
+        return $this->internalId;
     }
 
     public function setId($id)
     {
-        $this->accountId = $id;
+        $this->internalId = $id;
     }
 
     /**
