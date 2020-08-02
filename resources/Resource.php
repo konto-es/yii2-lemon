@@ -230,8 +230,8 @@ abstract class Resource extends Model
     public function loadAttributes(Response $response)
     {
         if (!$response->isOk) {
-            $this->addError('Error' . $response->statusCode, $response->data);
-            Yii::error($this->getErrors(), __METHOD__);
+            //$this->addError('Error' . $response->statusCode, $response->data);
+            Yii::error("The status code is: ". $response->statusCode, __METHOD__);
             return false;
         }
         if (isset($response->data['error'])) {
