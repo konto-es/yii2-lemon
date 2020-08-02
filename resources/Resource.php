@@ -231,11 +231,12 @@ abstract class Resource extends Model
     {
         if (!$response->isOk) {
             $this->addError('Error' . $response->statusCode, $response->data);
-            Yii::info($this->getErrors(), __METHOD__);
+            Yii::error($this->getErrors(), __METHOD__);
             return false;
         }
         if (isset($response->data['error'])) {
             $this->addError('error', $response->data['error']);
+            Yii::error($response->data['error'], __METHOD__);
             return false;
         }
 

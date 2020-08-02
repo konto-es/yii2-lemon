@@ -5,7 +5,7 @@ namespace kowi\lemon\resources;
 
 use kowi\lemon\objects\Adresse;
 use kowi\lemon\objects\Birth;
-use yii\httpclient\Response;
+use kowi\lemon\objects\IndividualAccount;
 
 /**
  * Class AccountIndividual
@@ -21,7 +21,6 @@ class AccountIndividual extends Resource
      * banking system.
      */
     public $accountId;
-    public $internalId;
     public $balance;
     public $status;
     public $isblocked;
@@ -66,6 +65,10 @@ class AccountIndividual extends Resource
      * contract. Otherwise it will be considered a client wallet.
      */
     public $isTechnicalAccount;
+    /**
+     * @var IndividualAccount
+     */
+    public $account;
 
     /**
      * Rules established according to the documentation
@@ -90,6 +93,7 @@ class AccountIndividual extends Resource
             [['phoneNumber', 'mobileNumber'], 'string', 'min' => 6, 'max' => 30],
             [['isDebtor', 'isOneTimeCustomerAccount', 'isTechnicalAccount'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             ['payerOrBeneficiary', 'in', 'range' => [null, 1, 2]],
+            [['account'], 'kowi\lemon\validators\ObjectValidator', 'targetClass' => 'kowi\lemon\objects\IndividualAccount', 'on' => [static::SCENARIO_LOAD]],
         ]);
     }
 
@@ -100,12 +104,12 @@ class AccountIndividual extends Resource
 
     public function getId()
     {
-        return $this->internalId;
+        return $this->account['internalId'];
     }
 
     public function setId($id)
     {
-        $this->internalId = $id;
+        $this->account['internalId'] = $id;
     }
 
     /**
@@ -139,19 +143,6 @@ class AccountIndividual extends Resource
     {
         $this->lastName = $lastName;
     }
-
-    /**
-     * @param Response $response
-     * @return bool
-     * @throws \yii\base\Exception
-     */
-    public function loadAttributes(Response $response)
-    {
-        if(isset($response->data['account']))
-            $response->addData($response->data['account']);
-        return parent::loadAttributes($response);
-    }
-
 
     public static function resource()
     {
