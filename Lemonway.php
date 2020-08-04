@@ -69,9 +69,16 @@ class Lemonway extends Component
      */
     public function createRequest()
     {
+        if (Yii::$app->getRequest() instanceof yii\web\Request && Yii::$app->getRequest()->getUserIP() != null) {
+            $ipAddress = Yii::$app->getRequest()->getUserIP();
+        } elseif (isset($_SERVER['SERVER_ADDR'])) {
+            $ipAddress = $_SERVER['SERVER_ADDR'];
+        } else {
+            $ipAddress = '127.0.0.1';
+        }
         $request = $this->getHttpClient()->createRequest()->setFormat(Client::FORMAT_JSON);
         $request->headers->set('Authorization', $this->getAccessToken());
-        $request->headers->set('PSU-IP-Address', '10.10.10.10');
+        $request->headers->set('PSU-IP-Address', $ipAddress);
         return $request;
     }
 
